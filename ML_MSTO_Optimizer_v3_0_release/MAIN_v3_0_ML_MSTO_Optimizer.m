@@ -18,7 +18,7 @@ macro.h_fd = 0; % SA via ANN: h_fd = 0; SA via CFD: h_fd = [0.001, 0.001] (pertu
 macro.vf_cutoff = 0.1; % cutoff volume fraction for CH interpolation
 
 macro.alg = 3; % alg=1: fmincon, alg=2: OC, alg=3: GOC, alg=4: MMA
-macro.maxloop = 500;   % Maximum number of iterations
+macro.maxloop = 100;   % Maximum number of iterations
 macro.tolx = 1e-3;    % Termination criterion
 macro.displayflag = 1; % Display structure actively flag
 
