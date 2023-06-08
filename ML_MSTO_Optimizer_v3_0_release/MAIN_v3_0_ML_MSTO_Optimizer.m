@@ -11,7 +11,7 @@ macro.volfrac = 0.50;
 macro.cont = 0; % Continuation: 1 = Yes, 0 = No (Untested)
 macro.flt_den_min = 1.0; %     density filter minimum radius (flt_den_min <= 1 is off)
 macro.flt_sen_min = 3.0; % sensitivity filter minimum radius (flt_sen_min <= 1 is off)
-macro.delta = 0.9; % Maximum allowable limit in density between adjacent macroscale elements. [0 1] (1 = no constraint), (0 = fixed design)
+macro.delta = 0.5; % Maximum allowable limit in density between adjacent macroscale elements. [0 1] (1 = no constraint), (0 = fixed design)
 macro.x_lb(1) = 0; macro.x_ub(1) = 1; % bounds for the density design
 macro.x_lb(2) = 0; macro.x_ub(2) = 1; % bounds for the weight design
 macro.h_fd = 0; % SA via ANN: h_fd = 0; SA via CFD: h_fd = [0.001, 0.001] (pertubation size for density and weight design variables)
