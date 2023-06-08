@@ -29,8 +29,8 @@ macro.alg = 3; % alg=1: fmincon, alg=2: OC, alg=3: GOC, alg=4: MMA %\
 macro.maxloop = 100;   % Maximum number of iterations %\
 macro.tolx = 1e-3;    % Termination criterion %\
 macro.displayflag = 1; % Display structure actively flag %\
-
-
+\
+\
 2D Cantilever Beam (density-graded design case): %\
 macro.nelx = 60; %\
 macro.nely = 30; %\
@@ -49,8 +49,8 @@ macro.alg = 3; % alg=1: fmincon, alg=2: OC, alg=3: GOC, alg=4: MMA %\
 macro.maxloop = 100;   % Maximum number of iterations %\
 macro.tolx = 1e-3;    % Termination criterion %\
 macro.displayflag = 1; % Display structure actively flag %\
-
-
+\
+\
 2D Cantilever Beam (infilled design case): %\
 macro.nelx = 60; %\
 macro.nely = 30; %\
