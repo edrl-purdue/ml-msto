@@ -8,8 +8,8 @@ This is a MATLAB code repository for the machine learning-based multiscale topol
 Below are instructions on how to run reduced fidelity versions of the 2D and 3D examples found in the submitted manuscript.
 Only lines 7-23 of the MAIN_v3_0_ML_MSTO_Optimizer.m file need to be modified to run the examples.
 
-2D Cantilever Beam (fixed design case):
-macro.nelx = 60;
+2D Cantilever Beam (fixed design case):\
+macro.nelx = 60;\
 macro.nely = 30;
 macro.nelz = 0; if macro.nelz == 0; macro.dim = 2; else; macro.dim = 3; end % set to 0 if 2D
 macro.volfrac = 0.50;
