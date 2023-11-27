@@ -3,7 +3,7 @@ Machine learning-based multiscale topology optimization
 
 By: Joel Najmon and Andres Tovar
 
-This is a MATLAB code repository for the machine learning-based multiscale topology optimization (ML-MSTO) method proposed in the 2023 journal paper: "Multiscale Topology Optimization via Artificial Neural Netowrks and Displacement-driven Toplogy-optimized Microstructures" submitted to Structural and Multidisciplinary Optimization (SMO) in June 2023. The paper is currently under review.
+This is a MATLAB code repository for the machine learning-based multiscale topology optimization (ML-MSTO) method proposed in the 2023 journal paper: "Multiscale Topology Optimization via Artificial Neural Netowrks and Displacement-driven Toplogy-optimized Microstructures" submitted to Computers & Structures in November 2023. The paper is currently under review.
 
 Only lines 7-23 of the MAIN_v3_0_ML_MSTO_Optimizer.m file need to be modified to run the examples. If you wish to skip the computationally expensive de-homogenization step then change line 30 from 'macro.dehom = 1;' to 'macro.dehom = 0;'. Results from the program are found in the 'Results' folder.
 
