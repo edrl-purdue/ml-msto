@@ -1,69 +1,54 @@
-%% MACHINE LEARNING-BASED MULTISCALE TOPOLOGY OPTIMIZATION v3_0
-% By Joel Najmon Ph.D. (c)
-% Last date updated: June 6th, 2023
-t_start = Initialize_Program();
+%% MACHINE LEARNING-BASED MULTISCALE TOPOLOGY OPTIMIZATION v5_0
+% By Joel Najmon Ph.D.
+% Last date updated: December, 2023
+clear; clc; close all; 
 
 %% MACROSCALE OPTIMIZATION SETTINGS
-macro.nelx = 60;
-macro.nely = 30;
+macro.nelx = 6;
+macro.nely = 2;
 macro.nelz = 0; if macro.nelz == 0; macro.dim = 2; else; macro.dim = 3; end % set to 0 if 2D
-macro.volfrac = 0.50;
+macro.volfrac = 0.25;
 macro.cont = 0; % Continuation: 1 = Yes, 0 = No (Untested)
 macro.flt_den_min = 1.0; %     density filter minimum radius (flt_den_min <= 1 is off)
-macro.flt_sen_min = 3.0; % sensitivity filter minimum radius (flt_sen_min <= 1 is off)
+macro.flt_sen_min = 1.5; % sensitivity filter minimum radius (flt_sen_min <= 1 is off)
 macro.delta = 0.5; % Maximum allowable limit in density between adjacent macroscale elements. [0 1] (1 = no constraint), (0 = fixed design)
 macro.x_lb(1) = 0; macro.x_ub(1) = 1; % bounds for the density design
 macro.x_lb(2) = 0; macro.x_ub(2) = 1; % bounds for the weight design
 macro.h_fd = 0; % SA via ANN: h_fd = 0; SA via CFD: h_fd = [0.001, 0.001] (pertubation size for density and weight design variables)
 macro.vf_cutoff = 0.1; % cutoff volume fraction for CH interpolation
 
-macro.alg = 3; % alg=1: fmincon, alg=2: OC, alg=3: GOC, alg=4: MMA
-macro.maxloop = 100;   % Maximum number of iterations
+macro.alg = 3; % alg=1: fmincon, alg=2: OC, alg=3: GOCM
+macro.maxloop = 10;   % Maximum number of iterations
 macro.tolx = 1e-3;    % Termination criterion
 macro.displayflag = 1; % Display structure actively flag
 
 %% SELECT DE-HOMOGENIZATION APPROACH AND SETTINGS
 % 0 = No De-homogenization
-% 1 = Local topology optimization (TOM with line connectivity)
-% 2 = Projection Method with Principal Stress Direction (Mechanical only)
-% 3 = Projection Method with Topology Approximation (anisotruss)
+% 1 = Local topology optimization (TOMs)
 macro.dehom = 1;
 if macro.dehom == 1
-    macro.scaler = 1; % TOM mesh resolution scaler (currently not implemented)
+    macro.Micro_scaler = 1; % TOM mesh resolution scaler (scales mesh to the nearest integer)
     macro.epi = 1; % unit cell size (should be 1/integer for dehom==1)
+    macro.PP_tri_infill = 0; % Triangular Infilling post processing method. 0 = off, 1 = on
     macro.den_threshold = 0.5; % this density threshold parameter controls the limit used for labelling a corner radii or edge element as solid or void (used for logically identifying solid or void elements)
-    macro.tri_infill = 0; % Triangular Infilling post processing method. 0 = off, 1 = on
-    macro.rm_skel = 0; % Skeletization post processing method. 0 = off, 1 = on
-elseif macro.dehom == 2 || macro.dehom == 3 % projection de-homogenization options
-    macro.scaler_i = 4; % intermediate mesh scalar
-    macro.scaler_f = 200; % fine mesh scalar
-    macro.epi = 1; % unit cell size (should be 1/integer at least for dehom==1)
-    macro.fmin = macro.epi; % Minimum feature size
+    macro.PP_rm_skel = 0; % Skeletization post processing method. 0 = off, 1 = on
 end
 if macro.dehom ~= 0
-    macro.rm_low_SE = 0; % Remove low strain energy solid elements (requires a high-fidelity fea). 0 = off, Non-zero = # of rm_low_se iterations to execute
-    macro.final_comp = 0; % Calculate final de-homogenization structure's compliance and compatibilty (requires a high-fidelity fea).
+    macro.PP_rm_low_SE = 0; % Number of low strain energy solid elements removal iterations (requires high-fidelity fea). 0 = off, Non-zero = on
+    macro.final_comp = 0; % Calculate final de-homogenization structure's compliance and compatibilty (requires one high-fidelity fea).
 end
 
-%% SELECT MACROSCALE PHYSICS MODELS
-% 1 = Mechanical
-% 2 = Thermal
-% 3 = Fluid
-macro.phys = [1];
-% assuming all physics models have the same amount of load cases
-% assuming all physics models use the same load_bc and supp_bc settings
+%% MACROSCALE PHYSICS MODEL
+macro.phys = 1; % 1 = Mechanical
 
-%% SELECT MACROSCALE OBJECTIVE FUNCTION
-% 1 = Compliance
-% 2 = Force-Displacement Error
-% 3 = Mutual Potential Energy
-macro.obj = 1; % still need to sort out/organize the code for other objective functions
+%% MACROSCALE OBJECTIVE FUNCTION
+macro.obj = 1; % 1 = Compliance
 
 %% DEFINE MACROSCALE BOUNDARY CONDITIONS
 macro.bc_type = 1; % TOM Type of Boundary Conditions: 1 = Homogeneous Dirichlet BC, 2 = Non-homogeneous Dirichlet BC
 macro.design_ini = 1; % Initial Design: 1 = Uniform, 2 = Normal, 3 = Random Distributions
 macro.bc = cell(3,2); % rows = physics modes, columns = [loads, supports]
-F0_Macro = cell(1,3); % KU = F for 3 physics
+F0_Macro = cell(1,3); % KU = F for potentially 3 physic models
 U0_Macro = cell(1,3);
 N_Macro = cell(1,3);
 for p = 1:length(macro.phys)
@@ -109,8 +94,8 @@ end
 fprintf('==========================================================\n');
 fprintf(' ML-MSTO Optimizer Program\n');
 fprintf('==========================================================\n\n');
-macro = fixed_macro_settings(macro);
 display_macro(macro)
+t_start = Initialize_Program();
 
 %% PREPARE ALGORITHM
 xMacro = ini_design(macro,macro.volfrac,macro.x_lb(1),macro.x_ub(1));
@@ -188,6 +173,7 @@ for pk = 1:numel(penal_k)
                                'SpecifyConstraintGradient',false,...
                                'MaxFunctionEvaluations',(macro.nele+1)*macro.maxloop,...
                                'Display','final-detailed',...
+                               'StepTolerance',macro.tolx,... % add termination criteria
                                'PlotFcns',@optimplotfval);
         
         % Solve macroscale optimization problem with fmincon
@@ -219,30 +205,6 @@ for pk = 1:numel(penal_k)
 
         % Solve macroscale optimization problem with Generalized Optimality Criterion
         Xin = alg_GOCM(fun,Xin,A,B,Aeq,Beq,LB,UB,nonlcon,options,macro);
-
-    % METHOD OF MOVING ASYMPTOTES
-    elseif macro.alg == 4 % MMA IS NOT FINISHED AND DOES NOT SUPPORT ALL CONSTRAINTS
-        change = 1;
-        loop = 0;
-        xold2 = Xin(:);
-        xold1 = Xin(:);
-        low = ones(macro.nele,1);
-        upp = ones(macro.nele,1);
-        while change > macro.tolx && loop < macro.maxloop
-            loop = loop+1;
-    
-            % homogenized macroscale objective and derivative
-            [c, dc] = Hom_Macro_Fn(Xin(:),macro,micro,mat,KE,FE,F0_Macro,U0_Macro,N_Macro,ML_model,TR);
-    
-            %Obtain new design variables using mmasub (PROVIDED BY SVANBERG)
-            [xopt,~,~,~,~,~,~,~,~,low,upp] = mmasub(1,macro.nele,loop,Xin(:),ones(macro.nele,1)*macro.x_lb(1),ones(macro.nele,1)*macro.x_ub(1),xold1,xold2,c,dc,sum(xMacro(:)) - macro.volfrac*macro.nele,1,low,upp,1,0,1000,0);
-            change = max(abs(xopt(:)-Xin(:)));
-    
-            % MMA update
-            xold2 = xold1(:);
-            xold1 = Xin(:);
-            Xin = xopt;
-        end
     end
 end
 fprintf('     Outer Optimization Problem Finished:\n');
@@ -277,15 +239,13 @@ save_results(foutput,dehom_history,[],[],[]);
 
 %% SAVE FINAL MULTISCALE DESIGN DATA
 final_history{end+1,1} = 'total_time'; final_history{end,5} = toc(t_start); % total time it took the ML-MSTO code to run
-save_results(foutput,final_history,[],[],[]); % Saves final_history and vtk files
+save_results(foutput,final_history,[],[],[]); % Saves final_history
 if macro.displayflag
     figure(1); clf;
     display_top(final_history{3,2}); title('Final Macroscale Design'); drawnow;
-    save_results(foutput,[],'Final_Macroscale_Design',[],[]);
     if macro.dehom ~= 0
-        figure(3); clf;
-        display_top(final_history{5,2}); title('Final Multiscale Design'); drawnow;
-        save_results(foutput,[],'Final_Multiscale_Design',[],[]);
+       figure(3); clf;
+       display_top(final_history{5,2}); title('Final Multiscale Design'); drawnow;
     end
 end
 fprintf('\n');

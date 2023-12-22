@@ -16,7 +16,6 @@ function [c, dc] = Hom_Macro_Fn(Xin,macro,micro,mat,KE,FE,F0_Macro,U0_Macro,N_Ma
         xMacro(:) = (macro.den_H*xMacro(:))./macro.den_Hs; % apply density filter
         Xin = xMacro(:);
     end
-    xMacro(:) = (macro.den_H*xMacro(:))./macro.den_Hs; % apply density filter
     
     %% SAVE ITERATION INFORMATION
     opt_history{end+1,2} = reshape(xMacro,[macro.nelx, macro.nely, max(macro.nelz,1)]);

@@ -90,6 +90,6 @@ function foutput = save_results(foutput,var,fig_name,macro,micro)
     
     %% SAVE MATLAB FIGURE
     if ~isempty(fig_name)
-        print(['Results/' foutput '/' fig_name '.png'], '-dpng', '-r900');
+%         print(['Results/' foutput '/' fig_name '.png'], '-dpng', '-r900');
     end
 end

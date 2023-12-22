@@ -89,8 +89,6 @@ function [KE, FE, GE] = Prepare_KE(C,phys,scale)
                         for j = 1:ndofn
                             beta(i,j) = invJ(ll,ll)*alpha(i,j,ll);
                         end
-                    end
-                    for i = 1:size(epsilon,1)
                         for j = 1:(scale.nen*ndofn)
                             B(i,j) = B(i,j) + beta(i,mod(j-1,ndofn)+1)*dN(floor((j-1)/ndofn)+1,ll);
                         end

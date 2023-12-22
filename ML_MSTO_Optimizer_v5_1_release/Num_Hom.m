@@ -1,4 +1,4 @@
-% NUMERICAL HOMOGENIZATION
+% NUMERICAL HOMOGENIZATION - MULTIPHYSICS
 function CH = Num_Hom(xPhys,scale,mat,KE,FE)
     % This code was adapted from numerical homogenization code from "How to
     % determine composite material properties using numerical

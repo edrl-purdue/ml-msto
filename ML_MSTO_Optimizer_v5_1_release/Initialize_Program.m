@@ -1,6 +1,6 @@
 % INITIALIZE ML-MSTO PROGRAM
 function t_start = Initialize_Program()
-    clear; clc; close all; t_start = tic; rng shuffle
+    t_start = tic; rng shuffle
 
     %% ADD PROGRAM PATHS
     curr_path = pwd;

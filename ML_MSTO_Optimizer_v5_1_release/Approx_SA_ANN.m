@@ -13,6 +13,9 @@ function [dc, satime] = Approx_SA_ANN(Xin,macro,micro,Ue_int_Macro,Fe_int_Macro,
         macro.h_fd(1) = (macro.x_ub(1) - macro.x_lb(1))*macro.h_fd(1);
     end
     x_lb = macro.x_lb; x_ub = macro.x_ub;
+    if micro.dim == 3
+        micro.ortho = 1;
+    end
     [~, ch_index, phys_index] = Indexing('full',micro,micro.ortho);
     [ml_index, ~, ~] = Indexing('part',micro,micro.ortho);
     TOM_e = [xMacro, xWeight];

@@ -5,41 +5,28 @@ function [scale,F,U,N] = Prepare_BCMacro(scale,phys)
     % scale.bc{phys = (1,2,3),2} = {'name', ##, dofs, optional} % define supports
     if scale.dim == 2
         if phys == 1 % 2D Mechanical
-%             scale.bc{1,1} = {'corn', 22, [0 -1 0], ''}; scale.bc{1,2} = {'edge', 13, 12, ''}; scale.macro_bc_name = 'MBB Beam';
-            scale.bc{1,1} = {'mide', 24, [0 -1 0], ''}; scale.bc{1,2} = {'edge', 13, 12, ''}; scale.macro_bc_name = 'Cantilever Beam';
-%             scale.bc{1,1} = {'edge', 24, [0 -1 0], ''}; scale.bc{1,2} = {'edge', 13, 12, ''}; scale.macro_bc_name = 'Sheared Beam';
-%             scale.bc{1,1} = {'midf', 11, [0 -1 0], ''}; scale.bc{1,2} = {'edge', 13, 12, ''; 'edge', 24, 12, ''}; scale.macro_bc_name = 'Clamped Beam with center load';
-%             scale.bc{1,1} = {'edge', 34, [0 -1 0], ''; 'corn', 33, [0 -0.5 0], ''; 'corn', 44, [0 -0.5 0], ''}; scale.bc{1,2} = {'edge', 13, 12, ''; 'edge', 24, 12, ''}; scale.macro_bc_name = 'Clamped Beam with distributed top edge load';
-%             scale.bc{1,1} = {'mide', 34, [0 -1 0], ''}; scale.bc{1,2} = {'corn', 11, 2, ''; 'corn', 22, 2, ''; 'midy', 11, 1, ''}; scale.macro_bc_name = 'Three-point Bending Beam';
-%             scale.bc{1,1} = {'edge', 34, [0 -1 0], ''; 'corn', 33, [0 -0.5 0], ''; 'corn', 44, [0 -0.5 0], ''}; scale.bc{1,2} = {'edge', 12, 12, ''}; scale.macro_bc_name = 'Compressed Block (top edge load, bottom edge support)';
-%             scale.bc{1,1} = {'mide', 12, [0 -1 0], ''}; scale.bc{1,2} = {'corn', 11, 2, ''; 'corn', 22, 2, ''; 'midy', 11, 1, ''}; scale.macro_bc_name = 'Bridge';
-        end
-        if phys == 2 % 2D Thermal
-            scale.bc{2,1} = {'face', 11, 1, ''}; scale.bc{2,2} = {'mide', 12, 1, '12_20'}; scale.macro_bc_name = 'thermal'; % everywhere flux with bottom middle 20% heat sink
-%             scale.bc{2,1} = {'edge', 34, 1, ''}; scale.bc{2,2} = {'edge', 13, 1, ''}; scale.macro_bc_name = 'thermal'; % top heat flux, left heat sink
-%             scale.bc{2,1} = {'edge', 24, 1, ''}; scale.bc{2,2} = {'edge', 13, 1, ''}; scale.macro_bc_name = 'thermal'; % right heat flux, left heat sink
-%             scale.bc{2,1} = {'corn', 44, 1, ''}; scale.bc{2,2} = {'edge', 13, 1, ''}; scale.macro_bc_name = 'thermal'; % top load MBB Beam
-%             scale.bc{2,1} = {'mide', 24, -1, ''}; scale.bc{2,2} = {'edge', 13, 1, ''}; scale.macro_bc_name = 'thermal'; % cantilever beam
-        end
-        if phys == 3 % 2D Fluid
-            
+            scale.bc{1,1} = {'corn', 22, [0 -1 0], ''}; scale.bc{1,2} = {'edge', 13, 12, ''}; scale.macro_bc_name = 'MBB Beam';
+            % scale.bc{1,1} = {'corn', 33, [0 -1 0], ''}; scale.bc{1,2} = {'edge', 13, 1, ''; 'corn', 22, 2, ''}; scale.macro_bc_name = 'Half MBB Beam';
+            % scale.bc{1,1} = {'mide', 24, [0 -1 0], ''}; scale.bc{1,2} = {'edge', 13, 12, ''}; scale.macro_bc_name = 'Cantilever Beam';
+            % scale.bc{1,1} = {'edge', 24, [0 -1 0], ''}; scale.bc{1,2} = {'edge', 13, 12, ''}; scale.macro_bc_name = 'Sheared Beam';
+            % scale.bc{1,1} = {'midf', 11, [0 -1 0], ''}; scale.bc{1,2} = {'edge', 13, 12, ''; 'edge', 24, 12, ''}; scale.macro_bc_name = 'Clamped Beam with center load';
+            % scale.bc{1,1} = {'edge', 34, [0 -1 0], ''; 'corn', 33, [0 -0.5 0], ''; 'corn', 44, [0 -0.5 0], ''}; scale.bc{1,2} = {'edge', 13, 12, ''; 'edge', 24, 12, ''}; scale.macro_bc_name = 'Clamped Beam with distributed top edge load';
+            % scale.bc{1,1} = {'mide', 34, [0 -1 0], ''}; scale.bc{1,2} = {'corn', 11, 2, ''; 'corn', 22, 2, ''; 'midy', 11, 1, ''}; scale.macro_bc_name = 'Three-point Bending Beam';
+            % scale.bc{1,1} = {'edge', 34, [0 -1 0], ''; 'corn', 33, [0 -0.5 0], ''; 'corn', 44, [0 -0.5 0], ''}; scale.bc{1,2} = {'edge', 12, 12, ''}; scale.macro_bc_name = 'Compressed Block (top edge load, bottom edge support)';
+            % scale.bc{1,1} = {'mide', 12, [0 -1 0], ''}; scale.bc{1,2} = {'corn', 11, 2, ''; 'corn', 22, 2, ''; 'midy', 11, 1, ''}; scale.macro_bc_name = 'Bridge';
+            % scale.bc{1,1} = {'corn', 11, [0 -1 0], ''}; scale.bc{1,2} = {'edge', 13, 1, ''; 'corn', 22, 2, ''}; scale.macro_bc_name = 'Wheel';
+            % scale.bc{1,1} = {'mide', 24, [0 -1 0], ''}; scale.bc{1,2} = {'edge', 34, 12, '33_40'}; scale.macro_bc_name = 'Lbracket';
         end
     elseif scale.dim == 3
         if phys == 1 % 3D Mechanical
-%             scale.bc{1,1} = {'edge', 24, [0 0 -1], ''}; scale.bc{1,2} = {'face', 55, 123, ''}; scale.macro_bc_name = 'MBB Beam';
-%             scale.bc{1,1} = {'midf', 66, [0 0 -1], ''}; scale.bc{1,2} = {'face', 55, 123, ''}; scale.macro_bc_name = 'Cantilever Beam';
+            % scale.bc{1,1} = {'edge', 24, [0 0 -1], ''}; scale.bc{1,2} = {'face', 55, 123, ''}; scale.macro_bc_name = 'MBB Beam';
+            % scale.bc{1,1} = {'midf', 66, [0 0 -1], ''}; scale.bc{1,2} = {'face', 55, 123, ''}; scale.macro_bc_name = 'Cantilever Beam';
             scale.bc{1,1} = {'midf', 22, [0 0 -1], ''}; scale.bc{1,2} = {'corn', 11, 3, ''; 'corn', 22, 3, ''; 'corn', 33, 3, ''; 'corn', 44, 3, ''; 'mids', 34, 2, ''; 'mids', 56, 1, ''}; scale.macro_bc_name = 'Five-point Bending Plate';
-        end
-        if phys == 2 % 3D Thermal
-            scale.bc{2,1} = {'face', 66, -1, ''}; scale.bc{2,2} = {'face', 55, 1, ''}; scale.macro_bc_name = 'thermal'; % Thermal Cantilever Beam
-        end 
-        if phys == 3 % 3D Fluid
-            
         end
     end
 
     %% MESH INFORMATION
-    [nnodes, dx, dy, dz, xyzc, lcoorp] = mesh_info(scale);
+    [nnodes, dx, dy, dz, xyzc, lcoorp] = mesh_info_detailed(scale);
     
     %% INITIALIZE PHYSICS MODELS
     % Mechanical
@@ -102,7 +89,7 @@ function [scale,F,U,N] = Prepare_BCMacro(scale,phys)
 end
 
 % MESH INFORMATION
-function [nnodes, dx, dy, dz, xyzc, lcoorp] = mesh_info(scale)
+function [nnodes, dx, dy, dz, xyzc, lcoorp] = mesh_info_detailed(scale)
     nnodes = (scale.nelx+1)*(scale.nely+1)*(scale.nelz+1);
 
     dx = 1/scale.nelx;
@@ -277,7 +264,9 @@ function verify_BC(name,idnums,mag_dofs,optional_ids,bctype,phys,dim)
         end
 
         area_ids = mod(floor(str2double(optional_ids(1:2)) ./ 10 .^ (floor(log10(str2double(optional_ids(1:2)))):-1:0)), 10); % Check for a valid optional area ID for the selected boundary condition
-        if idnums ~= str2double([num2str(area_ids(1)) num2str(area_ids(1))]) && idnums ~= str2double([num2str(area_ids(2)) num2str(area_ids(2))]) && idnums ~= str2double([num2str(area_ids(1)) num2str(area_ids(2))]) && idnums ~= str2double([num2str(area_ids(2)) num2str(area_ids(1))])
+        idnums_vec = num2str(idnums); idnums_vec = [str2num(idnums_vec(1)), str2num(idnums_vec(2))];
+        if any(area_ids ~= [idnums_vec(1), idnums_vec(1)]) && any(area_ids ~= [idnums_vec(2), idnums_vec(2)]) && any(area_ids ~= [idnums_vec(1), idnums_vec(2)]) && any(area_ids ~= [idnums_vec(2), idnums_vec(1)])
+        % if idnums ~= str2double([num2str(area_ids(1)) num2str(area_ids(1))]) && idnums ~= str2double([num2str(area_ids(2)) num2str(area_ids(2))]) && idnums ~= str2double([num2str(area_ids(1)) num2str(area_ids(2))]) && idnums ~= str2double([num2str(area_ids(2)) num2str(area_ids(1))])
             error(['Error: The optional area ID ' optional_ids(1:2) ' is invalid for boundary condition ' num2str(idnums)])
         end
         
